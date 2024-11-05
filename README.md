@@ -1,54 +1,61 @@
 # vsh
-Description
-vsh is a script that acts as a prefix, allowing you to position and resize a window across multiple screens. It is ideal if you have multiple screens and want to launch a program on a different screen. The only dependency is xdotool.
+## descrizione
+vsh è uno script che si invoca come prefisso e permette di posizionare e ridimensionare la finestra sugli schermi complessivi. 
+Ideale se hai piu schermi e vuoi lanciare un programma in uno schermo differente 
+L'unica dipendenza è xdotool
 
-Syntax
-Copia codice
-vsh x,y,w,h program_name and parameters
-Source Code
-bash
-Copia codice
+## sintassi
+
+```
+vsh x,y,w,h, programma e parametri
+```
+
+## sorgente
+
+```  bash
 #!/bin/bash
 
-# Check that there are at least 5 parameters
+# Controlla che ci siano almeno 5 parametri
 if [ "$#" -lt 5 ]; then
-  echo "Usage: $0 x y w h program_name"
+  echo "Uso: $0 x y w h nome_programma"
   exit 1
 fi
 
-# Assign parameters to variables
+# Assegna i parametri a variabili
 x=$1
 y=$2
 w=$3
 h=$4
 
-# Remove the first four parameters; the remaining ones are the command and its arguments
+# Rimuove i primi quattro parametri; i restanti sono il comando e i suoi parametri
 shift 4
 program_name="$1"
 shift 1
 
-# Launch the program in the background and get its PID
+# Lancia il programma in background e ottieni il PID
 $program_name &
 pid=$!
 
-# Pause to allow the window to open
+# Metti in pausa per dare tempo alla finestra di aprirsi
 sleep 1
 
-# Find the window ID associated with the PID
+# Trova il window ID associato al PID
 window_id=$(xdotool search --onlyvisible --pid $pid | tail -n 1)
 
-# Check if a window ID was found
+# Controlla se è stato trovato un window ID
 if [ -z "$window_id" ]; then
-  echo "Error: could not find the application window."
+  echo "Errore: non è stato possibile trovare la finestra dell'applicazione."
   exit 1
 fi
 
-# Position and resize the window
+# Posiziona e ridimensiona la finestra
 xdotool windowmove "$window_id" "$x" "$y"
 xdotool windowsize "$window_id" "$w" "$h"
 
-# Use wait to prevent the process from becoming a zombie
+# Usa wait per evitare che il processo diventi uno zombie
 wait $pid
 
-#echo "Application '$program_name' launched and positioned at ($x, $y) with size (${w}x${h})"
+#echo "Applicazione '$program_name' lanciata e posizionata a ($x, $y) con dimensione (${w}x${h})"
+
+```
 
