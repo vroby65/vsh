@@ -1,5 +1,4 @@
 # vsh
-Here's the translation of the script description and syntax from Italian to English:
 
 ## Description
 vsh is a script invoked as a prefix that allows positioning and resizing windows across screens. It's ideal if you have multiple monitors and want to launch a program on a different screen. The only dependency is xdotool.
