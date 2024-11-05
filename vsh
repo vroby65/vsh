@@ -1,43 +1,43 @@
 #!/bin/bash
 
-# Controlla che ci siano almeno 5 parametri
+# Check that there are at least 5 parameters
 if [ "$#" -lt 5 ]; then
-  echo "Uso: $0 x y w h nome_programma"
+  echo "Usage: $0 x y w h program_name"
   exit 1
 fi
 
-# Assegna i parametri a variabili
+# Assign parameters to variables
 x=$1
 y=$2
 w=$3
 h=$4
 
-# Rimuove i primi quattro parametri; i restanti sono il comando e i suoi parametri
+# Remove the first four parameters; the remaining ones are the command and its arguments
 shift 4
 program_name="$*"
 shift 1
 
-# Lancia il programma in background e ottieni il PID
+# Launch the program in the background and get its PID
 $program_name &
 pid=$!
 
-# Metti in pausa per dare tempo alla finestra di aprirsi
+# Pause to allow the window to open
 sleep 1
 
-# Trova il window ID associato al PID
+# Find the window ID associated with the PID
 window_id=$(xdotool search --onlyvisible --pid $pid | tail -n 1)
 
-# Controlla se è stato trovato un window ID
+# Check if a window ID was found
 if [ -z "$window_id" ]; then
-  echo "Errore: non è stato possibile trovare la finestra dell'applicazione."
+  echo "Error: could not find the application window."
   exit 1
 fi
 
-# Posiziona e ridimensiona la finestra
+# Position and resize the window
 xdotool windowmove "$window_id" "$x" "$y"
 xdotool windowsize "$window_id" "$w" "$h"
 
-# Usa wait per evitare che il processo diventi uno zombie
+# Use wait to prevent the process from becoming a zombie
 wait $pid
 
-#echo "Applicazione '$program_name' lanciata e posizionata a ($x, $y) con dimensione (${w}x${h})"
+#echo "Application '$program_name' launched and positioned at ($x, $y) with size (${w}x${h})"
